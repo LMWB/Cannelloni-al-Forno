@@ -34,6 +34,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include <simpleScheduler.h>
+#include "timerClock.h"
 #include "main.h"
 #include "dma.h"
 #include "rtc.h"
@@ -44,7 +45,6 @@
 /* USER CODE BEGIN Includes */
 #include "utils.h"
 #include "timeProcessing.h"
-#include "recirculationTimerClock.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -244,7 +244,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
 		char *date = (char*) &uart_dma_buffer[8];
 		convert_compiler_timestamp_to_asctime(time, date, timestampe_string);
 		cvt_asctime(timestampe_string, &timedate);
-		(void) change_controller_time(&timedate);
+		(void) set_controller_time(&timedate);
 
 		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart_dma_buffer, UART_DMA_BUFFER_SIZE);
 	}

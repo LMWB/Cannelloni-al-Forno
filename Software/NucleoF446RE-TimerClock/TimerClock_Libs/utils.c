@@ -19,12 +19,6 @@ bool is_over_timeout(uint32_t tick_start, uint32_t timeout_in_ms) {
 	return 0;
 }
 
-void refresh_watchdog(void) {
-	if (REFRESH_WATCHDOG() != DEVICE_OK) {
-		myprintf("Watchdog refresh failed\n");
-	}
-}
-
 uint8_t get_percentage_from_range(uint32_t min_value, uint32_t max_value, uint32_t current_value) {
 	if (max_value == min_value) {
 		return 0; // Avoid division by zero

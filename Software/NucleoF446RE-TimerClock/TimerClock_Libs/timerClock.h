@@ -1,5 +1,5 @@
-#ifndef HEATCUBE_TASKS_PERIODIC_RECIRCULATIONTIMERCLOCK_H_
-#define HEATCUBE_TASKS_PERIODIC_RECIRCULATIONTIMERCLOCK_H_
+#ifndef TIMERCLOCK_H_
+#define TIMERCLOCK_H_
 
 #include <time.h>
 #include <stdbool.h>
@@ -22,7 +22,7 @@ typedef struct _recirculation_timer_clock{
 	timer_clock_t 	slot_set_points[MAX_TIMER_SLOTS];
 } recirculation_timer_clock_t;
 
-// later after proper testing this does not need to be global
+/* later after proper testing this does not need to be global */
 extern recirculation_timer_clock_t recirculation_timer_clock;
 
 void set_recirculation_number_of_timeslots_active(uint8_t number_of_slot_active);
@@ -30,9 +30,8 @@ void set_recirculation_start(uint8_t slot, uint16_t start_in_minutes);
 void set_recirculation_end(uint8_t slot, uint16_t start_in_minutes);
 void run_recirculation_timer_clock();
 
-// might move to utils.c / timeProcessing.c
 uint16_t convert_gmtime_to_minuts(struct tm* time);
 void print_current_time(struct tm* time);
 void print_active_time_slots(void);
 
-#endif /* HEATCUBE_TASKS_PERIODIC_RECIRCULATIONTIMERCLOCK_H_ */
+#endif
