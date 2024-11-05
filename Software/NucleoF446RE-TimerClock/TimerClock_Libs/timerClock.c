@@ -2,7 +2,7 @@
 #include "utils.h"
 #include "timeProcessing.h"
 
-recirculation_timer_clock_t recirculation_timer_clock	= {0};
+timer_clock_m_t recirculation_timer_clock	= {0};
 
 int8_t daylight_saving_time_minutes_offset = 0;
 
@@ -47,11 +47,6 @@ bool is_current_time_in_any_active_timeslots(uint16_t now_in_minutes){
 	return false;
 }
 
-uint16_t convert_gmtime_to_minuts(struct tm* time)
-{
-	return (time->tm_hour*60 + time->tm_min);
-}
-
 void print_current_time(struct tm* time) {
 	myprintf("Current Time: %02d : %02d : %02d (UTC) = %d min \n",
 			time->tm_hour,
@@ -73,24 +68,24 @@ void print_active_time_slots(void) {
 	myprintf("Day Light Saving set to %d minutes\n", correction_dls);
 }
 
-void set_recirculation_number_of_timeslots_active(uint8_t number_of_slot_active){
+void timerclock_set_number_of_active_timeslots(uint8_t number_of_slot_active){
 	if(number_of_slot_active <= MAX_TIMER_SLOTS){
 		recirculation_timer_clock.number_of_active_timeslots = number_of_slot_active;
 	}
 }
 
-void set_recirculation_start(uint8_t slot, uint16_t start_in_minutes){
+void timerclock_set_start(uint8_t slot, uint16_t start_in_minutes){
 	if(slot <= MAX_TIMER_SLOTS){
 		recirculation_timer_clock.slot_set_points[slot].start_in_minutes = start_in_minutes;
 	}
 }
-void set_recirculation_end(uint8_t slot, uint16_t end_in_minutes){
+void timerclock_set_end(uint8_t slot, uint16_t end_in_minutes){
 	if(slot <= MAX_TIMER_SLOTS){
 		recirculation_timer_clock.slot_set_points[slot].end_in_minutes = end_in_minutes;
 	}
 }
 
-void run_recirculation_timer_clock(){
+void timerclock_run(){
 	static timerClockStates_t state = UNDEFINED;
 	timerClockStates_t new_state 	= OFF;		/* initiates this variable to OFF ensures the output must be driven at first call of this function */
 

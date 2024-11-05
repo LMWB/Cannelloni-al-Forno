@@ -43,8 +43,8 @@
 /* USER CODE BEGIN Includes */
 #include "utils.h"
 #include "timeProcessing.h"
-#include <simpleScheduler.h>
 #include "timerClock.h"
+#include "noRTOS.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -114,19 +114,19 @@ int main(void)
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
 
-	set_recirculation_number_of_timeslots_active(3);
+	timerclock_set_number_of_active_timeslots(3);
 
 	/* from 5:00 until 9:00 */
-	set_recirculation_start(TIMER_SLOTS_1, 5*60);
-	set_recirculation_end(	TIMER_SLOTS_1, 9*60);
+	timerclock_set_start(TIMER_SLOTS_1, 5*60);
+	timerclock_set_end(	TIMER_SLOTS_1, 9*60);
 
 	/* from 14:26 until 15:00 */
-	set_recirculation_start(TIMER_SLOTS_2, 14*60 + 26);
-	set_recirculation_end(	TIMER_SLOTS_2, 15*60);
+	timerclock_set_start(TIMER_SLOTS_2, 14*60 + 26);
+	timerclock_set_end(	TIMER_SLOTS_2, 15*60);
 
 	/* from 16:00 until 23:00 */
-	set_recirculation_start(TIMER_SLOTS_3, 16*60);
-	set_recirculation_end(	TIMER_SLOTS_3, 23*60);
+	timerclock_set_start(TIMER_SLOTS_3, 16*60);
+	timerclock_set_end(	TIMER_SLOTS_3, 23*60);
 
 //	char timestampe_string[26];
 //	struct tm timedate = { 0 };
@@ -156,16 +156,16 @@ int main(void)
 	}
 
 	void test_callback3(void){
-		run_recirculation_timer_clock();
+		timerclock_run();
 	}
 
-	simple_task_t test_task = {.delay = eDELAY_1s, .task_callback = test_callback};
-	add_task_to_scheduler(&test_task);
-	simple_task_t test_task2 = {.delay = eDELAY_5s, .task_callback = test_callback2};
-	add_task_to_scheduler(&test_task2);
-	simple_task_t test_task3 = {.delay = eDELAY_10s, .task_callback = test_callback3};
-	add_task_to_scheduler(&test_task3);
-	run_schedular();
+	noRTOS_task_t test_task = {.delay = eDELAY_1s, .task_callback = test_callback};
+	noRTOS_add_task_to_scheduler(&test_task);
+	noRTOS_task_t test_task2 = {.delay = eDELAY_5s, .task_callback = test_callback2};
+	noRTOS_add_task_to_scheduler(&test_task2);
+	noRTOS_task_t test_task3 = {.delay = eDELAY_10s, .task_callback = test_callback3};
+	noRTOS_add_task_to_scheduler(&test_task3);
+	noRTOS_run_schedular();
 
   /* USER CODE END 2 */
 
@@ -244,7 +244,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
 		char *date = (char*) &uart_dma_buffer[8];
 		convert_compiler_timestamp_to_asctime(time, date, timestampe_string);
 		cvt_asctime(timestampe_string, &timedate);
-		(void) set_controller_time(&timedate);
+		(void) change_controller_time(&timedate);
 
 		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart_dma_buffer, UART_DMA_BUFFER_SIZE);
 	}

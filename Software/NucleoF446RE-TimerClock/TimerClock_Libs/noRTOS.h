@@ -1,11 +1,12 @@
-#ifndef SIMPLESCHEDULER_H_
-#define SIMPLESCHEDULER_H_
+#ifndef NORTOS_H_
+#define NORTOS_H_
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "stm32f4xx.h"
 
-#define SCHEDULAR_GET_TICK() 		HAL_GetTick()
-#define SCHEDULAR_MAX_SIMPLE_TASK	128
+#define NORTOS_SCHEDULAR_GET_TICK()	HAL_GetTick() // returns tick in milliseconds
+#define NORTOS_NO_OF_MAX_TASK		128
 
 typedef void(*VoidFunctionPointer)(void);
 
@@ -23,12 +24,11 @@ typedef struct {
 	uint32_t tick;
 	task_delay_e delay;
 	VoidFunctionPointer task_callback;
-} simple_task_t;
+} noRTOS_task_t;
 
-extern simple_task_t *simple_tasks[SCHEDULAR_MAX_SIMPLE_TASK];
+extern noRTOS_task_t *global_list_of_tasks[NORTOS_NO_OF_MAX_TASK];
 
-bool add_task_to_scheduler(simple_task_t *task);
+bool noRTOS_add_task_to_scheduler(noRTOS_task_t *task);
+void noRTOS_run_schedular(void);
 
-void run_schedular(void);
-
-#endif /* SIMPLESCHEDULER_H_ */
+#endif /* NORTOS_H_ */

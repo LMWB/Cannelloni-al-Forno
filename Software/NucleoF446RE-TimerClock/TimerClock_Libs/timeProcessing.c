@@ -161,7 +161,12 @@ time_t get_epoch_time(void) {
 	return timestamp;
 }
 
-uint8_t set_controller_time(struct tm *time) {
+uint16_t convert_gmtime_to_minuts(struct tm* time)
+{
+	return (time->tm_hour*60 + time->tm_min);
+}
+
+uint8_t change_controller_time(struct tm *time) {
 	RTC_TimeTypeDef s_time = {0};
 	RTC_DateTypeDef s_date = {0};
 	s_time.Hours = time->tm_hour;

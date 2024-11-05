@@ -20,17 +20,16 @@ typedef struct _timer_clock{
 typedef struct _recirculation_timer_clock{
 	uint8_t 		number_of_active_timeslots;
 	timer_clock_t 	slot_set_points[MAX_TIMER_SLOTS];
-} recirculation_timer_clock_t;
+} timer_clock_m_t;
 
 /* later after proper testing this does not need to be global */
-extern recirculation_timer_clock_t recirculation_timer_clock;
+extern timer_clock_m_t recirculation_timer_clock;
 
-void set_recirculation_number_of_timeslots_active(uint8_t number_of_slot_active);
-void set_recirculation_start(uint8_t slot, uint16_t start_in_minutes);
-void set_recirculation_end(uint8_t slot, uint16_t start_in_minutes);
-void run_recirculation_timer_clock();
+void timerclock_set_number_of_active_timeslots(uint8_t number_of_slot_active);
+void timerclock_set_start(uint8_t slot, uint16_t start_in_minutes);
+void timerclock_set_end(uint8_t slot, uint16_t start_in_minutes);
+void timerclock_run();
 
-uint16_t convert_gmtime_to_minuts(struct tm* time);
 void print_current_time(struct tm* time);
 void print_active_time_slots(void);
 

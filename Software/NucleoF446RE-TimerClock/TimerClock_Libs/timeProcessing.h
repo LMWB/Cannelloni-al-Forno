@@ -21,6 +21,9 @@ struct tm *get_gmtime_stm32();
  */
 time_t get_epoch_time(void);
 
+/* */
+uint16_t convert_gmtime_to_minuts(struct tm* time);
+
 /**
  * @brief  Convert the unix epoch time string e.g. "Mar 23 15:19:26 2023"
  * 		to unix epoch time in seconds from Jan 1st 1900 00:00:00
