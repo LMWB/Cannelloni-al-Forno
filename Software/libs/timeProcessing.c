@@ -7,24 +7,6 @@ static const char MONTH_NAMES[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
 static const char WEEK_NAMES[] = "SunMonTueWedThuFriSat";
 
 
-
-
-timer_clock_old_t timer_clock_1[NO_OF_TIMER_CLOCK_SLOTS] = {};
-
-//void print_curretn_time(struct tm* time) {
-//	myprintf("Current Time: %02d : %02d : %02d\n",
-//			time->tm_hour,
-//			time->tm_min,
-//			time->tm_sec);
-//}
-
-void reset_all_timer_clock_slots(void){
-	for(int_fast8_t i = 0; i < NO_OF_ACTIVE_TIMER_CLOCKS; i++){
-		timer_clock_1[i].slot_is_outdated = false;
-	}
-}
-
-
 bool is_new_day(uint16_t current_time_in_minutes){
 	static uint16_t time = 0;
 	bool return_value = false;
@@ -35,10 +17,6 @@ bool is_new_day(uint16_t current_time_in_minutes){
 	time = current_time_in_minutes;
 	return return_value;
 }
-
-
-
-
 
 time_t cvt_asctime(const char *linux_asctime_str, struct tm *time) {
 	struct tm t = {0};
@@ -122,12 +100,6 @@ void convert_compiler_timestamp_to_asctime(char* time, char* date, char* asctime
 
 }
 
-//uint16_t convert_gmtime_to_minuts(struct tm* time)
-//{
-//	return (time->tm_hour*60 + time->tm_min);
-//}
-
-
 struct tm *get_gmtime_stm32() {
 	/* Reference: https://cplusplus.com/reference/ctime/tm/
 	 *
@@ -183,6 +155,11 @@ time_t get_epoch_time(void) {
 	return timestamp;
 }
 
+uint16_t convert_gmtime_to_minuts(struct tm* time)
+{
+	return (time->tm_hour*60 + time->tm_min);
+}
+
 uint8_t change_controller_time(struct tm *time) {
 	RTC_TimeTypeDef s_time = {0};
 	RTC_DateTypeDef s_date = {0};
@@ -204,17 +181,3 @@ uint8_t change_controller_time(struct tm *time) {
 
 	return 1;
 }
-
-
-/* not relevant here since we got no internet module */
-//void synchronize_controller_clock_with_internet(void) {
-//	/* if Connection to Internet is established, get timestamp from time server */
-//	char asc_time_string[26] = {0};
-//	struct tm timedate = {0};
-//	(void) get_atom_clock_time(asc_time_string);
-//
-//	/* set RTC on target MCU */
-//	(void) cvt_asctime(asc_time_string, &timedate);
-//	(void) change_controller_time(&timedate);
-//	myprintf("Smart hub time synchronized with the internet!\n");
-//}
