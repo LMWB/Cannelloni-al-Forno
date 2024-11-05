@@ -139,6 +139,8 @@ int main(void)
 //	(void) change_controller_time(&timedate);
 //	myprintf("RTC set!\n");
 
+	myprintf("Starting timerclock and noRTOS Demo\n");
+
 	HAL_Delay(200);
 	struct tm *curren_Date_Time = get_gmtime_stm32();
 	print_current_time(curren_Date_Time);
@@ -245,6 +247,10 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
 		convert_compiler_timestamp_to_asctime(time, date, timestampe_string);
 		cvt_asctime(timestampe_string, &timedate);
 		(void) change_controller_time(&timedate);
+
+		/* handshake, answer to terminal app that time was updated successful */
+		//todo
+		UART_SEND_TERMINAL((uint8_t *) "-OK\n", 4);
 
 		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart_dma_buffer, UART_DMA_BUFFER_SIZE);
 	}

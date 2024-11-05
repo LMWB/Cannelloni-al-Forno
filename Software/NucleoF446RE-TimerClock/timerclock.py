@@ -18,6 +18,8 @@ def date_time_parser(args):
 		byteString 		= timeString.encode() + dateString.encode()
 		terminal 		= serial.Serial(serialInterface, 115200)
 		terminal.write(byteString)
+		answer = terminal.readline()
+		print(f'received:{answer}')
 		terminal.close()
 	except:
 		print(f'could not open port {serialInterface} Device or resource busy')
