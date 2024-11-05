@@ -33,8 +33,6 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <simpleScheduler.h>
-#include "timerClock.h"
 #include "main.h"
 #include "dma.h"
 #include "rtc.h"
@@ -45,6 +43,8 @@
 /* USER CODE BEGIN Includes */
 #include "utils.h"
 #include "timeProcessing.h"
+#include <simpleScheduler.h>
+#include "timerClock.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

@@ -20,10 +20,6 @@ void myprintf(const char *fmt, ...);
 
 bool is_over_timeout(uint32_t tick_start, uint32_t timeout_in_ms);
 
-void refresh_watchdog();
-
-uint8_t get_percentage_from_range(uint32_t min_value, uint32_t max_value, uint32_t current_value);
-
 char *strstr_with_zero(const char *haystack, const char *needle, size_t limit);
 
-#endif /* COMMON_UTILS_H */
+#endif

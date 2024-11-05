@@ -11,28 +11,6 @@ void myprintf(const char *fmt, ...) {
 	UART_SEND_TERMINAL((uint8_t *) buffer, len);
 }
 
-bool is_over_timeout(uint32_t tick_start, uint32_t timeout_in_ms) {
-	uint32_t tick_end = GET_TICK();
-	if (tick_end - tick_start > timeout_in_ms) {
-		return 1;
-	}
-	return 0;
-}
-
-uint8_t get_percentage_from_range(uint32_t min_value, uint32_t max_value, uint32_t current_value) {
-	if (max_value == min_value) {
-		return 0; // Avoid division by zero
-	}
-	if (current_value < min_value) {
-		return 0;
-	}
-	if (current_value > max_value) {
-		return 100;
-	}
-	uint8_t percentage = ((current_value - min_value) * 100) / (max_value - min_value);
-	return percentage;
-}
-
 char *strstr_with_zero(const char *haystack, const char *needle, size_t limit) {
 	size_t needle_len = strlen(needle);
 	if (needle_len == 0) {
