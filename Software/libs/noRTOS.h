@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "stm32f4xx.h"
+#include "main.h"
 
 #define NORTOS_SCHEDULAR_GET_TICK()	HAL_GetTick() // returns tick in milliseconds
 #define NORTOS_NO_OF_MAX_TASK		128
