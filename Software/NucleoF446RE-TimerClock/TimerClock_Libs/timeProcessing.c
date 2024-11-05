@@ -100,12 +100,6 @@ void convert_compiler_timestamp_to_asctime(char* time, char* date, char* asctime
 
 }
 
-//uint16_t convert_gmtime_to_minuts(struct tm* time)
-//{
-//	return (time->tm_hour*60 + time->tm_min);
-//}
-
-
 struct tm *get_gmtime_stm32() {
 	/* Reference: https://cplusplus.com/reference/ctime/tm/
 	 *
@@ -187,17 +181,3 @@ uint8_t change_controller_time(struct tm *time) {
 
 	return 1;
 }
-
-
-/* not relevant here since we got no internet module */
-//void synchronize_controller_clock_with_internet(void) {
-//	/* if Connection to Internet is established, get timestamp from time server */
-//	char asc_time_string[26] = {0};
-//	struct tm timedate = {0};
-//	(void) get_atom_clock_time(asc_time_string);
-//
-//	/* set RTC on target MCU */
-//	(void) cvt_asctime(asc_time_string, &timedate);
-//	(void) change_controller_time(&timedate);
-//	myprintf("Smart hub time synchronized with the internet!\n");
-//}

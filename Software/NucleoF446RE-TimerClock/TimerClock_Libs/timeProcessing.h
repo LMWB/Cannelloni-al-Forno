@@ -4,7 +4,9 @@
 #include <time.h>
 #include <stdbool.h>
 
-
+/**
+ *
+ */
 bool is_new_day(uint16_t current_time_in_minutes);
 
 /**
@@ -21,7 +23,9 @@ struct tm *get_gmtime_stm32();
  */
 time_t get_epoch_time(void);
 
-/* */
+/**
+ *
+ */
 uint16_t convert_gmtime_to_minuts(struct tm* time);
 
 /**
@@ -41,7 +45,9 @@ time_t cvt_asctime(const char *linux_asctime_str, struct tm *time);
  */
 uint8_t change_controller_time(struct tm *time);
 
-/* */
+/**
+ *
+ */
 void convert_compiler_timestamp_to_asctime(char* time, char* date, char* asctime_string);
 
 #endif

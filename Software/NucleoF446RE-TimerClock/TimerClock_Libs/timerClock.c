@@ -6,7 +6,7 @@ timer_clock_m_t recirculation_timer_clock	= {0};
 
 int8_t daylight_saving_time_minutes_offset = 0;
 
-// simple wrapper to skip passing arguments to a function pointer
+// simple wrapper to attache system specific on?off functions
 void on(void){
 	NUCLEO_LED1_ON();
 }
