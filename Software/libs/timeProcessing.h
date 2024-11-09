@@ -48,6 +48,11 @@ uint8_t change_controller_time(struct tm *time);
 /**
  *
  */
+void set_RTC_with_compile_time(void);
+
+/**
+ *
+ */
 void convert_compiler_timestamp_to_asctime(char* time, char* date, char* asctime_string);
 
 #endif

@@ -60,8 +60,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define UART_DMA_BUFFER_SIZE 128
-uint8_t uart_dma_buffer[UART_DMA_BUFFER_SIZE];
+#define UART_BUFFER_SIZE 128
+uint8_t uart2_buffer[UART_BUFFER_SIZE];
 /* USER CODE END 0 */
 
 /**
@@ -120,7 +120,7 @@ int main(void)
 
 
 	/* activate UART DMA */
-	HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart_dma_buffer, UART_DMA_BUFFER_SIZE);
+	HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart2_buffer, UART_BUFFER_SIZE);
 
 	void test_callback(void){
 		myprintf("Hello World Task 1\n");
@@ -224,8 +224,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
 
 		char timestampe_string[26];
 		struct tm timedate = { 0 };
-		char *time = (char*) &uart_dma_buffer[0];
-		char *date = (char*) &uart_dma_buffer[8];
+		char *time = (char*) &uart2_buffer[0];
+		char *date = (char*) &uart2_buffer[8];
 		convert_compiler_timestamp_to_asctime(time, date, timestampe_string);
 		cvt_asctime(timestampe_string, &timedate);
 		(void) change_controller_time(&timedate);
@@ -234,7 +234,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
 		//todo
 		UART_SEND_TERMINAL((uint8_t *) "-OK\n", 4);
 
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart_dma_buffer, UART_DMA_BUFFER_SIZE);
+		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart2_buffer, UART_BUFFER_SIZE);
 	}
 }
 

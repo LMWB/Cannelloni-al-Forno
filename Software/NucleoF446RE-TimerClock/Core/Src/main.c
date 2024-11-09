@@ -16,7 +16,14 @@
  *
  *
  *
- *
+ * Setup:
+ * Default CPU CLK = 84MHz
+ * UART2 -> Terminal (115200 8 N 1), Interrupt enabled, no DMA
+ * NVIC
+ * 	EXTI [10:15] Nucleo Blue Button
+ * 	UART2 global IRQ
+ * RTC with external CLK
+ * RTC with ext. Coincell on VBatt-Pin
  *
  *
  *
@@ -34,7 +41,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dma.h"
 #include "rtc.h"
 #include "usart.h"
 #include "gpio.h"
@@ -76,8 +82,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define UART_DMA_BUFFER_SIZE 128
-uint8_t uart_dma_buffer[UART_DMA_BUFFER_SIZE];
+
 /* USER CODE END 0 */
 
 /**
@@ -109,7 +114,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
@@ -128,17 +132,6 @@ int main(void)
 	timerclock_set_start(TIMER_SLOTS_3, 16*60);
 	timerclock_set_end(	TIMER_SLOTS_3, 23*60);
 
-//	char timestampe_string[26];
-//	struct tm timedate = { 0 };
-//	convert_compiler_timestamp_to_asctime(__TIME__, __DATE__, timestampe_string);
-//	cvt_asctime(timestampe_string, &timedate);
-//	myprintf("Start Demo Timer Clock\n");
-//	myprintf("Current Date-Time: %s", timestampe_string);
-
-	/* set RTC on target MCU */
-//	(void) change_controller_time(&timedate);
-//	myprintf("RTC set!\n");
-
 	myprintf("Starting timerclock and noRTOS Demo\n");
 
 	HAL_Delay(200);
@@ -146,8 +139,8 @@ int main(void)
 	print_current_time(curren_Date_Time);
 
 
-	/* activate UART DMA */
-	HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart_dma_buffer, UART_DMA_BUFFER_SIZE);
+	/* activate UART Interrupt based receive (byte wise) */
+	noRTOS_UART2_read_byte_with_interrupt();
 
 	void test_callback(void){
 		myprintf("Hello World Task 1\n");
@@ -161,12 +154,31 @@ int main(void)
 		timerclock_run();
 	}
 
+	void test_callback4(void){
+		if(noRTOS_is_UART2_read_line_complete()){
+			char timestampe_string[26];
+			struct tm timedate = { 0 };
+			char *time = (char*) &uart2_buffer[0];
+			char *date = (char*) &uart2_buffer[8];
+			convert_compiler_timestamp_to_asctime(time, date, timestampe_string);
+			cvt_asctime(timestampe_string, &timedate);
+			(void) change_controller_time(&timedate);
+
+			noRTOS_UART2_clear_rx_buffer();
+		}
+	}
+
 	noRTOS_task_t test_task = {.delay = eDELAY_1s, .task_callback = test_callback};
 	noRTOS_add_task_to_scheduler(&test_task);
+
 	noRTOS_task_t test_task2 = {.delay = eDELAY_5s, .task_callback = test_callback2};
 	noRTOS_add_task_to_scheduler(&test_task2);
+
 	noRTOS_task_t test_task3 = {.delay = eDELAY_10s, .task_callback = test_callback3};
 	noRTOS_add_task_to_scheduler(&test_task3);
+
+	noRTOS_task_t test_task4 = {.delay = eDELAY_10milli, .task_callback = test_callback4};
+	noRTOS_add_task_to_scheduler(&test_task4);
 	noRTOS_run_schedular();
 
   /* USER CODE END 2 */
@@ -237,22 +249,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	}
 }
 
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+
 	if (huart->Instance == USART2){
-
-		char timestampe_string[26];
-		struct tm timedate = { 0 };
-		char *time = (char*) &uart_dma_buffer[0];
-		char *date = (char*) &uart_dma_buffer[8];
-		convert_compiler_timestamp_to_asctime(time, date, timestampe_string);
-		cvt_asctime(timestampe_string, &timedate);
-		(void) change_controller_time(&timedate);
-
-		/* handshake, answer to terminal app that time was updated successful */
-		//todo
-		UART_SEND_TERMINAL((uint8_t *) "-OK\n", 4);
-
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart_dma_buffer, UART_DMA_BUFFER_SIZE);
+		noRTOS_UART2_receive_byte_callback();
 	}
 }
 

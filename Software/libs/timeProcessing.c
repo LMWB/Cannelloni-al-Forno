@@ -181,3 +181,11 @@ uint8_t change_controller_time(struct tm *time) {
 
 	return 1;
 }
+
+void set_RTC_with_compile_time(void){
+	char timestampe_string[26];
+	struct tm timedate = { 0 };
+	convert_compiler_timestamp_to_asctime(__TIME__, __DATE__, timestampe_string);
+	cvt_asctime(timestampe_string, &timedate);
+	change_controller_time(&timedate);
+}

@@ -1,4 +1,5 @@
 #include "noRTOS.h"
+#include "hardwareGlobal.h"
 
 noRTOS_task_t *global_list_of_tasks[NORTOS_NO_OF_MAX_TASK];
 static uint32_t number_of_active_task = 0;
@@ -23,4 +24,36 @@ void noRTOS_run_schedular(void) {
 			}
 		}
 	}
+}
+
+uint8_t uart2_buffer[UART_BUFFER_SIZE] =  {0};
+static uint16_t rx_size = 0;
+static bool uart2_read_line_complete = false;
+
+bool noRTOS_is_UART2_read_line_complete(void){
+	return uart2_read_line_complete;
+}
+
+void noRTOS_UART2_read_byte_with_interrupt(void){
+	HAL_UART_Receive_IT(&huart2, &uart2_buffer[rx_size], 1);
+}
+
+void noRTOS_UART2_clear_rx_buffer(void){
+	/* Echo back whats been received */
+	UART_SEND_TERMINAL( uart2_buffer, rx_size);
+
+	rx_size = 0;
+	uart2_read_line_complete = false;
+	noRTOS_UART2_read_byte_with_interrupt();
+}
+
+void noRTOS_UART2_receive_byte_callback(void){
+	if(rx_size >= 3 && uart2_buffer[rx_size-1] == '\r' && uart2_buffer[rx_size] == '\n'){
+		rx_size++;
+		uart2_read_line_complete = true;
+	}else{
+		rx_size++;
+		noRTOS_UART2_read_byte_with_interrupt();
+	}
+
 }
