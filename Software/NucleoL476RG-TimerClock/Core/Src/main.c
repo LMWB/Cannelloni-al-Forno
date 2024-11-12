@@ -13,22 +13,28 @@
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
+  *
+  *
+  *
+  * Set RTC with python based command line tool 'timerclock.py'
+  * 'python timerclock.py /dev/ttyACM0'
+  *
+  * 13 mA power consumption on 12V ext. power supply (measured with amp meter on JP6)
+  * but Vbatt acts differently than it does on F446. With JP6 open the cpu still runs
+  *
+  *
   ******************************************************************************
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dma.h"
 #include "rtc.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "utils.h"
-#include "timeProcessing.h"
-#include "timerClock.h"
-#include "noRTOS.h"
+#include "app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -60,8 +66,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define UART_BUFFER_SIZE 128
-uint8_t uart2_buffer[UART_BUFFER_SIZE];
+
 /* USER CODE END 0 */
 
 /**
@@ -93,55 +98,11 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
 
-	timerclock_set_number_of_active_timeslots(3);
-
-	/* from 5:00 until 9:00 */
-	timerclock_set_start(TIMER_SLOTS_1, 5*60);
-	timerclock_set_end(	TIMER_SLOTS_1, 9*60);
-
-	/* from 14:26 until 15:00 */
-	timerclock_set_start(TIMER_SLOTS_2, 14*60 + 26);
-	timerclock_set_end(	TIMER_SLOTS_2, 15*60);
-
-	/* from 16:00 until 23:00 */
-	timerclock_set_start(TIMER_SLOTS_3, 16*60);
-	timerclock_set_end(	TIMER_SLOTS_3, 23*60);
-
-	myprintf("Starting timerclock and noRTOS Demo\n");
-
-	HAL_Delay(200);
-	struct tm *curren_Date_Time = get_gmtime_stm32();
-	print_current_time(curren_Date_Time);
-
-
-	/* activate UART DMA */
-	HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart2_buffer, UART_BUFFER_SIZE);
-
-	void test_callback(void){
-		myprintf("Hello World Task 1\n");
-	}
-
-	void test_callback2(void){
-		myprintf("\tHello World Task 2\n");
-	}
-
-	void test_callback3(void){
-		timerclock_run();
-	}
-
-	noRTOS_task_t test_task = {.delay = eDELAY_1s, .task_callback = test_callback};
-	noRTOS_add_task_to_scheduler(&test_task);
-	noRTOS_task_t test_task2 = {.delay = eDELAY_5s, .task_callback = test_callback2};
-	noRTOS_add_task_to_scheduler(&test_task2);
-	noRTOS_task_t test_task3 = {.delay = eDELAY_10s, .task_callback = test_callback3};
-	noRTOS_add_task_to_scheduler(&test_task3);
-	noRTOS_run_schedular();
-
+  app_main();
 
   /* USER CODE END 2 */
 
@@ -212,31 +173,6 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-	if (GPIO_Pin == B1_Pin) {
-		NUCLEO_LED1_TOGGLE();
-	}
-}
-
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
-	if (huart->Instance == USART2){
-
-		char timestampe_string[26];
-		struct tm timedate = { 0 };
-		char *time = (char*) &uart2_buffer[0];
-		char *date = (char*) &uart2_buffer[8];
-		convert_compiler_timestamp_to_asctime(time, date, timestampe_string);
-		cvt_asctime(timestampe_string, &timedate);
-		(void) change_controller_time(&timedate);
-
-		/* handshake, answer to terminal app that time was updated successful */
-		//todo
-		UART_SEND_TERMINAL((uint8_t *) "-OK\n", 4);
-
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart2_buffer, UART_BUFFER_SIZE);
-	}
-}
 
 /* USER CODE END 4 */
 

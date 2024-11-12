@@ -48,6 +48,7 @@ void noRTOS_UART2_clear_rx_buffer(void){
 }
 
 void noRTOS_UART2_receive_byte_callback(void){
+	/* check if read line complete */
 	if(rx_size >= 3 && uart2_buffer[rx_size-1] == '\r' && uart2_buffer[rx_size] == '\n'){
 		rx_size++;
 		uart2_read_line_complete = true;
