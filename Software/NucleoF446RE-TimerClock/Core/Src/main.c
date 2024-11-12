@@ -156,6 +156,7 @@ int main(void)
 
 	void test_callback4(void){
 		if(noRTOS_is_UART2_read_line_complete()){
+			// todo: add (if timestring starts with "AT+SETRTC")
 			char timestampe_string[26];
 			struct tm timedate = { 0 };
 			char *time = (char*) &uart2_buffer[0];
