@@ -19,6 +19,13 @@
  * Setup:
  * Default CPU CLK = 84MHz
  * UART2 -> Terminal (115200 8 N 1), Interrupt enabled, no DMA
+ * LD293 Enable 1,2 -> D13 / PA5
+ * LD293 Enable 3,4 -> D8  / PA9
+ * LD293 Out1 		-> D11 / PA7
+ * LD293 Out2 		-> D9  / PC7
+ * LD293 Out3 		-> D10 / PB6
+ * LD293 Out4 		-> D12 / PA6
+ *
  * NVIC
  * 	EXTI [10:15] Nucleo Blue Button
  * 	UART2 global IRQ
