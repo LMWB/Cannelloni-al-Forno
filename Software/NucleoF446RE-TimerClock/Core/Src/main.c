@@ -35,6 +35,7 @@
  *
  *
  * 15-20mA power consumption on 12V ext. power supply (measured with amp meter on JP6)
+ * to use Battery on Vbat, SB45 must be open! (solder bridge on back of Nucleo)
  *
  ******************************************************************************
  */

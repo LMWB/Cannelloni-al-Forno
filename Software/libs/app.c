@@ -30,6 +30,9 @@ void app_main(void) {
 	/* activate UART Interrupt based receive (byte wise) */
 	noRTOS_UART2_read_byte_with_interrupt();
 
+	LD293D_ENABLE_OUT1_OUT2();
+	LD293D_ENABLE_OUT3_OUT4();
+
 	void test_callback(void) {
 		myprintf("Hello World Task 1\n");
 	}
@@ -43,19 +46,22 @@ void app_main(void) {
 	}
 
 	void test_callback4(void) {
-		if (noRTOS_is_UART2_read_line_complete()) {
+		if( noRTOS_is_UART2_read_line_complete() ) {
+			char* at_command = strstr( (char*)uart2_buffer, "AT+SETRTC:");
+			if( at_command ){
+				char timestampe_string[26];
+				struct tm timedate = { 0 };
+				char *time = at_command+10;
+				char *date = at_command+18;
+				convert_compiler_timestamp_to_asctime(time, date, timestampe_string);
+				cvt_asctime(timestampe_string, &timedate);
+				(void) change_controller_time(&timedate);
 
-
-			// todo: add (if timestring starts with "AT+SETRTC")
-			char timestampe_string[26];
-			struct tm timedate = { 0 };
-			char *time = (char*) &uart2_buffer[0];
-			char *date = (char*) &uart2_buffer[8];
-			convert_compiler_timestamp_to_asctime(time, date, timestampe_string);
-			cvt_asctime(timestampe_string, &timedate);
-			(void) change_controller_time(&timedate);
-
-			noRTOS_UART2_clear_rx_buffer();
+				noRTOS_UART2_clear_rx_buffer();
+			}else{
+				noRTOS_UART2_echo_whats_been_received();
+				noRTOS_UART2_clear_rx_buffer();
+			}
 		}
 	}
 
@@ -79,7 +85,7 @@ void app_main(void) {
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	if (GPIO_Pin == B1_Pin) {
-		NUCLEO_LED1_TOGGLE();
+		LD293D_TOGGLE_OUT1();
 	}
 }
 

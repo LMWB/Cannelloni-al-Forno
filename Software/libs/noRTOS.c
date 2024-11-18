@@ -1,5 +1,9 @@
 #include "noRTOS.h"
 #include "hardwareGlobal.h"
+#include <string.h>
+/**
+ * *************** Task Schedular ***************
+ */
 
 noRTOS_task_t *global_list_of_tasks[NORTOS_NO_OF_MAX_TASK];
 static uint32_t number_of_active_task = 0;
@@ -26,6 +30,10 @@ void noRTOS_run_schedular(void) {
 	}
 }
 
+/**
+ * *************** UART 2 Handler ***************
+ */
+
 uint8_t uart2_buffer[UART_BUFFER_SIZE] =  {0};
 static uint16_t rx_size = 0;
 static bool uart2_read_line_complete = false;
@@ -39,12 +47,15 @@ void noRTOS_UART2_read_byte_with_interrupt(void){
 }
 
 void noRTOS_UART2_clear_rx_buffer(void){
-	/* Echo back whats been received */
-	UART_SEND_TERMINAL( uart2_buffer, rx_size);
-
 	rx_size = 0;
 	uart2_read_line_complete = false;
+	memset(uart2_buffer, 0, UART_BUFFER_SIZE);
 	noRTOS_UART2_read_byte_with_interrupt();
+}
+
+void noRTOS_UART2_echo_whats_been_received(void)
+{
+	UART_SEND_TERMINAL( uart2_buffer, rx_size);
 }
 
 void noRTOS_UART2_receive_byte_callback(void){

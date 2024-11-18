@@ -33,6 +33,25 @@
 
 #define SW_NUCLEO   B1_Pin
 
+#define LD293D_ENABLE_OUT1_OUT2()	HAL_GPIO_WritePin(EN1_2_GPIO_Port, EN1_2_Pin, 1)
+#define LD293D_ENABLE_OUT3_OUT4()	HAL_GPIO_WritePin(EN3_4_GPIO_Port, EN3_4_Pin, 1)
+#define LD293D_DISABLE_OUT1_OUT2()	HAL_GPIO_WritePin(EN1_2_GPIO_Port, EN1_2_Pin, 0)
+#define LD293D_DISABLE_OUT3_OUT4()	HAL_GPIO_WritePin(EN3_4_GPIO_Port, EN3_4_Pin, 0)
+
+#define LD293D_TURN_ON_OUT1()	HAL_GPIO_WritePin(Out1_GPIO_Port, Out1_Pin, 1)
+#define LD293D_TURN_OFF_OUT1()	HAL_GPIO_WritePin(Out1_GPIO_Port, Out1_Pin, 0)
+#define LD293D_TURN_ON_OUT2()	HAL_GPIO_WritePin(Out2_GPIO_Port, Out2_Pin, 1)
+#define LD293D_TURN_OFF_OUT2()	HAL_GPIO_WritePin(Out2_GPIO_Port, Out2_Pin, 0)
+#define LD293D_TURN_ON_OUT3()	HAL_GPIO_WritePin(Out3_GPIO_Port, Out3_Pin, 1)
+#define LD293D_TURN_OFF_OUT3()	HAL_GPIO_WritePin(Out3_GPIO_Port, Out3_Pin, 0)
+#define LD293D_TURN_ON_OUT4()	HAL_GPIO_WritePin(Out4_GPIO_Port, Out4_Pin, 1)
+#define LD293D_TURN_OFF_OUT4()	HAL_GPIO_WritePin(Out4_GPIO_Port, Out4_Pin, 0)
+
+#define LD293D_TOGGLE_OUT1() 	HAL_GPIO_TogglePin(Out1_GPIO_Port, Out1_Pin)
+#define LD293D_TOGGLE_OUT2() 	HAL_GPIO_TogglePin(Out2_GPIO_Port, Out2_Pin)
+#define LD293D_TOGGLE_OUT3() 	HAL_GPIO_TogglePin(Out3_GPIO_Port, Out3_Pin)
+#define LD293D_TOGGLE_OUT4() 	HAL_GPIO_TogglePin(Out4_GPIO_Port, Out4_Pin)
+
 /* *** UART ***************************************************************** */
 #define UART_TERMINAL_HANDLER 	            huart2
 #define UART_TERMINAL_INSTANCE 	            USART2

@@ -14,6 +14,15 @@
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   *
+  * Setup:
+  * Default CPU CLK = 80MHz
+  * UART2 -> Terminal (115200 8 N 1), Interrupt enabled, no DMA
+  * NVIC
+  * 	EXTI [10:15] Nucleo Blue Button
+  * 	UART2 global IRQ
+  * RTC with external CLK
+  * RTC with ext. Coincell on VBatt-Pin
+  *
   *
   *
   * Set RTC with python based command line tool 'timerclock.py'
@@ -22,6 +31,7 @@
   * 13 mA power consumption on 12V ext. power supply (measured with amp meter on JP6)
   * but Vbatt acts differently than it does on F446. With JP6 open the cpu still runs
   *
+  * to use Battery on Vbat, SB45 must be open! (solder bridge on back of Nucleo)
   *
   ******************************************************************************
   */

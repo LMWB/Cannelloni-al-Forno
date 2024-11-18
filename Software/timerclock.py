@@ -10,14 +10,16 @@ def date_time_parser(args):
 	#now = time.gmtime()
 	now = time.localtime()
 	
+	atCommandString = "AT+SETRTC:"
 	timeString = time.strftime("%H:%M:%S", now)
 	dateString = time.strftime("%b %d %Y", now)
-	dateString = dateString + '\r'
-	dateString = dateString + '\n'
-	print(timeString + ' ' + dateString)
+	atCommandString = atCommandString + timeString
+	atCommandString = atCommandString + dateString
+	atCommandString = atCommandString + '\r\n'
+	print(atCommandString)
 	serialInterface = args.serial_interface
 	try:
-		byteString = timeString.encode() + dateString.encode()
+		byteString = atCommandString.encode()
 		terminal = serial.Serial(serialInterface, 115200)
 		terminal.write(byteString)
 		answer = terminal.readline()

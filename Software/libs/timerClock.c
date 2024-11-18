@@ -3,16 +3,16 @@
 #include "timeProcessing.h"
 
 timer_clock_m_t recirculation_timer_clock	= {0};
-
 int8_t daylight_saving_time_minutes_offset = 0;
+
 
 // simple wrapper to attache system specific on?off functions
 void on(void){
-	NUCLEO_LED1_ON();
+	LD293D_TURN_ON_OUT1();
 }
 
 void off(void){
-	NUCLEO_LED1_OFF();
+	LD293D_TURN_OFF_OUT1();
 }
 
 typedef enum{OFF, ON, UNDEFINED} timerClockStates_t;

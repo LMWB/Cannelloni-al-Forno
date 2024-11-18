@@ -38,5 +38,6 @@ extern uint8_t 	uart2_buffer[UART_BUFFER_SIZE];
 bool noRTOS_is_UART2_read_line_complete(void);
 void noRTOS_UART2_read_byte_with_interrupt(void);
 void noRTOS_UART2_clear_rx_buffer(void);
+void noRTOS_UART2_echo_whats_been_received(void);
 void noRTOS_UART2_receive_byte_callback(void);
 #endif /* NORTOS_H_ */
