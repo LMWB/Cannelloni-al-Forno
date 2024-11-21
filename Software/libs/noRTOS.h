@@ -27,7 +27,7 @@ typedef struct {
 	VoidFunctionPointer task_callback;
 } noRTOS_task_t;
 
-extern noRTOS_task_t *global_list_of_tasks[NORTOS_NO_OF_MAX_TASK];
+extern noRTOS_task_t* global_list_of_tasks[NORTOS_NO_OF_MAX_TASK];
 
 bool noRTOS_add_task_to_scheduler(noRTOS_task_t *task);
 void noRTOS_run_schedular(void);

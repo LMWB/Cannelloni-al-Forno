@@ -31,7 +31,7 @@ void noRTOS_run_schedular(void) {
 }
 
 /**
- * *************** UART 2 Handler ***************
+ * *************** temporary UART 2 Handler ***************
  */
 
 uint8_t uart2_buffer[UART_BUFFER_SIZE] =  {0};

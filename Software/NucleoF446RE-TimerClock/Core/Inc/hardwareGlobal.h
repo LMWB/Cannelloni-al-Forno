@@ -27,10 +27,6 @@
 #define DEVICE_TIMEOUT                  HAL_TIMEOUT
 
 /* *** GPIO ***************************************************************** */
-#define NUCLEO_LED1_ON()       HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET)
-#define NUCLEO_LED1_OFF()      HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET)
-#define NUCLEO_LED1_TOGGLE()   HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin)
-
 #define SW_NUCLEO   B1_Pin
 
 #define LD293D_ENABLE_OUT1_OUT2()	HAL_GPIO_WritePin(EN1_2_GPIO_Port, EN1_2_Pin, 1)

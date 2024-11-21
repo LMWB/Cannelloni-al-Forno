@@ -7,19 +7,15 @@
 
 void app_main(void) {
 
-	timerclock_set_number_of_active_timeslots(3);
+	timerclock_set_number_of_active_timeslots(2);
 
-	/* from 5:00 until 9:00 */
-	timerclock_set_start(TIMER_SLOTS_1, 5 * 60);
-	timerclock_set_end( TIMER_SLOTS_1, 9 * 60);
+	/* from 5:00 until 7:30 */
+	timerclock_set_start(TIMER_SLOTS_1,	5*60);
+	timerclock_set_end( TIMER_SLOTS_1,	7*60+30);
 
-	/* from 14:26 until 15:00 */
-	timerclock_set_start(TIMER_SLOTS_2, 14 * 60 + 26);
-	timerclock_set_end( TIMER_SLOTS_2, 15 * 60);
-
-	/* from 16:00 until 23:00 */
-	timerclock_set_start(TIMER_SLOTS_3, 16 * 60);
-	timerclock_set_end( TIMER_SLOTS_3, 23 * 60);
+	/* from 16:00 until 21:00 */
+	timerclock_set_start(TIMER_SLOTS_2,	16*60);
+	timerclock_set_end( TIMER_SLOTS_2,	21*60);
 
 	myprintf("Starting timerclock and noRTOS Demo\n");
 
@@ -33,8 +29,21 @@ void app_main(void) {
 	LD293D_ENABLE_OUT1_OUT2();
 	LD293D_ENABLE_OUT3_OUT4();
 
+	void heart_beat_blinky(void){
+		// toggle LED to indicate cpu is running, no stuck in polling
+		;
+	}
+
+	void print_tick_time_stamp_diff(void){
+		static uint32_t time_stamp_last_call = 0;
+		uint32_t now = NORTOS_SCHEDULAR_GET_TICK();
+		printf("differnce from now to previous call is %ld ms\n", (now-time_stamp_last_call));
+		time_stamp_last_call = now;
+
+	}
+
 	void test_callback(void) {
-		myprintf("Hello World Task 1\n");
+		printf("Testing printf with _write() override\n\n");
 	}
 
 	void test_callback2(void) {
@@ -65,8 +74,12 @@ void app_main(void) {
 		}
 	}
 
+	/* now I create some tasks and add them to the schedular */
 	noRTOS_task_t test_task = { .delay = eDELAY_1s, .task_callback = test_callback };
 	noRTOS_add_task_to_scheduler(&test_task);
+
+	noRTOS_task_t heartbeat = { .delay = eDELAY_1s, .task_callback = print_tick_time_stamp_diff };
+	noRTOS_add_task_to_scheduler(&heartbeat);
 
 	noRTOS_task_t test_task2 = { .delay = eDELAY_5s, .task_callback = test_callback2 };
 	noRTOS_add_task_to_scheduler(&test_task2);
@@ -77,10 +90,10 @@ void app_main(void) {
 	noRTOS_task_t test_task4 = { .delay = eDELAY_10milli, .task_callback = test_callback4 };
 	noRTOS_add_task_to_scheduler(&test_task4);
 
-	/* runs for ever */
+	/* this runs for ever */
 	noRTOS_run_schedular();
 
-	/* never get here */
+	/* never get here! */
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
