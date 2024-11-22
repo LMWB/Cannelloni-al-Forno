@@ -1160,7 +1160,6 @@
 			)
 		)
 		(model "/home/lukas/work/KiCad8/my3DModels/NUCLEO-F446RE.step"
-			(hide yes)
 			(offset
 				(xyz -24 -8.5 -13)
 			)
