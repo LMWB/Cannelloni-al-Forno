@@ -13,7 +13,7 @@ Since the LD293D is a THT device and the overall application i quite simple, I d
 todo
 - courtyard illumination
 - Xmas deciration
-- composition of Canneloni-al-Forno and CC_LED_driver
+- composition of Canneloni-al-Forno and LED_CC_Driver
 
 # Features
 - 12V input (powers Nucleo board as well)
