@@ -23,7 +23,7 @@ todo
 # todo
 - add some sort of remote access (wifi, can, RS485,..)
 - add shunt to track total energy consuption
-- use DRV9180 instead of LD293D
+- use TI DRV89xx instead of LD293D
 
 
 
