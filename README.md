@@ -20,5 +20,11 @@ todo
 - 4 digital outputs (Vout = Vinput)
 - RTC with coin cell back up battery
 
-#todo
+# todo
 - add some sort of remote access (wifi, can, RS485,..)
+- add shunt to track total energy consuption
+- use DRV9180 instead of LD293D
+
+
+
+
