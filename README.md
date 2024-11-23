@@ -1,5 +1,5 @@
 # Cannelloni-al-Forno
-TimerClock Arduino Shield and C-Library
+Timer Clock Arduino Shield and C-Library
 
 # Description
 I always wanted to use the world famous LD293D motor driver IC. Here I created a very simple application using this chip to build a timer clock that is able to drive some 12V loads.  
@@ -14,3 +14,6 @@ Since the LD293D is a THT device and the overall application i quite simple, I d
 - 12V input (powers Nucleo board as well)
 - 4 digital outputs (Vout = Vinput)
 - RTC with coin cell back up battery
+
+#todo
+- add some sort of remote access (wifi, can, RS485,..)
