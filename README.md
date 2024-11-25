@@ -10,8 +10,9 @@ Since the LD293D is a THT device and the overall application i quite simple, I d
 ![alt](./Images/nucleo_mount.png)
 
 # Real World Example
+I used the [led constant current driver](https://github.com/LMWB/LED_CC_Driver?tab=readme-ov-file) to create a light for my courtyard.  
+
 todo
-- courtyard illumination
 - Xmas deciration
 - composition of Canneloni-al-Forno and LED_CC_Driver
 
