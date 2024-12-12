@@ -155,6 +155,12 @@ time_t get_epoch_time(void) {
 	return timestamp;
 }
 
+time_t convert_tm_struct_to_epoch_time(struct tm* time){
+	time_t timestamp = {0};
+	timestamp = mktime(time);
+	return timestamp;
+}
+
 uint16_t convert_gmtime_to_minuts(struct tm* time)
 {
 	return (time->tm_hour*60 + time->tm_min);

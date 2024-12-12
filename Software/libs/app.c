@@ -29,11 +29,6 @@ void app_main(void) {
 	LD293D_ENABLE_OUT1_OUT2();
 	LD293D_ENABLE_OUT3_OUT4();
 
-	void heart_beat_blinky(void){
-		// toggle LED to indicate cpu is running, no stuck in polling
-		;
-	}
-
 	void print_tick_time_stamp_diff(void){
 		static uint32_t time_stamp_last_call = 0;
 		uint32_t now = NORTOS_SCHEDULAR_GET_TICK();
@@ -42,19 +37,16 @@ void app_main(void) {
 
 	}
 
-	void test_callback(void) {
-		printf("Testing printf with _write() override\n\n");
+	// print time and epoch time to log on terminal
+	void print_time_now(void) {
+		struct tm *curren_Date_Time = get_gmtime_stm32();
+		uint32_t epochtime = (uint32_t) convert_tm_struct_to_epoch_time(curren_Date_Time);
+
+		printf("current time (utc),%02d:%02d:%02d,", curren_Date_Time->tm_hour, curren_Date_Time->tm_min, curren_Date_Time->tm_sec);
+		printf("epochtime,%ld\n", epochtime);
 	}
 
-	void test_callback2(void) {
-		myprintf("\tHello World Task 2\n");
-	}
-
-	void test_callback3(void) {
-		timerclock_run();
-	}
-
-	void test_callback4(void) {
+	void uart_at_command_callback(void) {
 		if( noRTOS_is_UART2_read_line_complete() ) {
 			char* at_command = strstr( (char*)uart2_buffer, "AT+SETRTC=");
 			if( at_command ){
@@ -73,20 +65,11 @@ void app_main(void) {
 	}
 
 	/* now I create some tasks and add them to the schedular */
-	noRTOS_task_t test_task = { .delay = eDELAY_1s, .task_callback = test_callback };
-	noRTOS_add_task_to_scheduler(&test_task);
+	noRTOS_task_t print_time_now_t = { .delay = eDELAY_1s, .task_callback = print_time_now };
+	noRTOS_add_task_to_scheduler(&print_time_now_t);
 
-	noRTOS_task_t heartbeat = { .delay = eDELAY_1s, .task_callback = print_tick_time_stamp_diff };
-	noRTOS_add_task_to_scheduler(&heartbeat);
-
-	noRTOS_task_t test_task2 = { .delay = eDELAY_5s, .task_callback = test_callback2 };
-	noRTOS_add_task_to_scheduler(&test_task2);
-
-	noRTOS_task_t test_task3 = { .delay = eDELAY_10s, .task_callback = test_callback3 };
-	noRTOS_add_task_to_scheduler(&test_task3);
-
-	noRTOS_task_t test_task4 = { .delay = eDELAY_10milli, .task_callback = test_callback4 };
-	noRTOS_add_task_to_scheduler(&test_task4);
+	noRTOS_task_t uart_t = { .delay = eDELAY_10milli, .task_callback = uart_at_command_callback };
+	noRTOS_add_task_to_scheduler(&uart_t);
 
 	/* this runs for ever */
 	noRTOS_run_schedular();
