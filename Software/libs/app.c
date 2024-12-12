@@ -56,21 +56,19 @@ void app_main(void) {
 
 	void test_callback4(void) {
 		if( noRTOS_is_UART2_read_line_complete() ) {
-			char* at_command = strstr( (char*)uart2_buffer, "AT+SETRTC:");
+			char* at_command = strstr( (char*)uart2_buffer, "AT+SETRTC=");
 			if( at_command ){
-				char timestampe_string[26];
+				char asctime_string[26];
 				struct tm timedate = { 0 };
 				char *time = at_command+10;
 				char *date = at_command+18;
-				convert_compiler_timestamp_to_asctime(time, date, timestampe_string);
-				cvt_asctime(timestampe_string, &timedate);
+				convert_compiler_timestamp_to_asctime(time, date, asctime_string);
+				convert_asctime_to_tm_struct(asctime_string, &timedate);
 				(void) change_controller_time(&timedate);
-
-				noRTOS_UART2_clear_rx_buffer();
 			}else{
 				noRTOS_UART2_echo_whats_been_received();
-				noRTOS_UART2_clear_rx_buffer();
 			}
+			noRTOS_UART2_clear_rx_buffer();
 		}
 	}
 

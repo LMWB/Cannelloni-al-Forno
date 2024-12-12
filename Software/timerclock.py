@@ -3,6 +3,9 @@ import time
 import argparse
 '''
 parse current time in linux format to uart to microcontroller 
+
+from terminal: 'python timerclock.py /dev/ttyACM0'
+
 '''
 def date_time_parser(args):
 	# generate time string in format like __TIME__(19:10:12) and __DATE__ (Oct 20 24) under C language
@@ -10,7 +13,7 @@ def date_time_parser(args):
 	#now = time.gmtime()
 	now = time.localtime()
 	
-	atCommandString = "AT+SETRTC:"
+	atCommandString = "AT+SETRTC="
 	timeString = time.strftime("%H:%M:%S", now)
 	dateString = time.strftime("%b %d %Y", now)
 	atCommandString = atCommandString + timeString

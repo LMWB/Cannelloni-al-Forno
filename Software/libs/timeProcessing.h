@@ -36,7 +36,7 @@ uint16_t convert_gmtime_to_minuts(struct tm* time);
  * @param  pointer to struct tm from time.h for application use on exact time/date Format
  * @retval time_t Unix Epoch Time
  */
-time_t cvt_asctime(const char *linux_asctime_str, struct tm *time);
+time_t convert_asctime_to_tm_struct(const char *linux_asctime_str, struct tm *time);
 
 /**
  * @brief 	set the Microcontrollers Real Time Clock

@@ -18,7 +18,7 @@ bool is_new_day(uint16_t current_time_in_minutes){
 	return return_value;
 }
 
-time_t cvt_asctime(const char *linux_asctime_str, struct tm *time) {
+time_t convert_asctime_to_tm_struct(const char *linux_asctime_str, struct tm *time) {
 	struct tm t = {0};
 	int hour, minutes, seconds;
 	int year, month, day;
@@ -186,6 +186,6 @@ void set_RTC_with_compile_time(void){
 	char timestampe_string[26];
 	struct tm timedate = { 0 };
 	convert_compiler_timestamp_to_asctime(__TIME__, __DATE__, timestampe_string);
-	cvt_asctime(timestampe_string, &timedate);
+	convert_asctime_to_tm_struct(timestampe_string, &timedate);
 	change_controller_time(&timedate);
 }
