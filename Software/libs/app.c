@@ -88,5 +88,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if (huart->Instance == USART2){
 		noRTOS_UART2_receive_byte_callback();
 	}
+
+
+
+
 }
 
