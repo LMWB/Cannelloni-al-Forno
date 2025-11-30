@@ -26,4 +26,4 @@ todo
 - add shunt to track total energy consumption
 - use TI DRV89xx instead of LD293D
 - update noRTOS to latest version
-- 
+- make timerclock multi instance to control different output channels

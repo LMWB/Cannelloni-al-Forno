@@ -15,7 +15,7 @@ void app_main(void) {
 
 	/* from 16:00 until 21:00 */
 	timerclock_set_start(TIMER_SLOTS_2,	16*60);
-	timerclock_set_end( TIMER_SLOTS_2,	21*60);
+	timerclock_set_end( TIMER_SLOTS_2,	17*60+47);
 
 	myprintf("Starting timerclock and noRTOS Demo\n");
 
@@ -53,7 +53,7 @@ void app_main(void) {
 				char asctime_string[26];
 				struct tm timedate = { 0 };
 				char *time = at_command+10;
-				char *date = at_command+18;
+				char *date = at_command+19;
 				convert_compiler_timestamp_to_asctime(time, date, asctime_string);
 				convert_asctime_to_tm_struct(asctime_string, &timedate);
 				(void) change_controller_time(&timedate);
@@ -65,11 +65,23 @@ void app_main(void) {
 	}
 
 	/* now I create some tasks and add them to the schedular */
-	noRTOS_task_t print_time_now_t = { .delay = eDELAY_1s, .task_callback = print_time_now };
-	noRTOS_add_task_to_scheduler(&print_time_now_t);
+
+	// wenn reihenfolge nicht chronologisch,
+	// gehts auch aber es entstehen interesannte Zeiteffekte
+	// dokumentieren!!
 
 	noRTOS_task_t uart_t = { .delay = eDELAY_10milli, .task_callback = uart_at_command_callback };
 	noRTOS_add_task_to_scheduler(&uart_t);
+
+	noRTOS_task_t print_time_now_t = { .delay = eDELAY_1s, .task_callback = print_time_now };
+	noRTOS_add_task_to_scheduler(&print_time_now_t);
+
+	noRTOS_task_t test_task4 = { .delay = eDELAY_1s, .task_callback = print_tick_time_stamp_diff };
+	noRTOS_add_task_to_scheduler(&test_task4);
+
+	noRTOS_task_t test_task3 = { .delay = eDELAY_10s, .task_callback = timerclock_run };
+	noRTOS_add_task_to_scheduler(&test_task3);
+
 
 	/* this runs for ever */
 	noRTOS_run_schedular();
