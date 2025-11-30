@@ -16,7 +16,7 @@ def date_time_parser(args):
 	atCommandString = "AT+SETRTC="
 	timeString = time.strftime("%H:%M:%S", now)
 	dateString = time.strftime("%b %d %Y", now)
-	atCommandString = atCommandString + timeString
+	atCommandString = atCommandString + timeString + ' '
 	atCommandString = atCommandString + dateString
 	atCommandString = atCommandString + '\r\n'
 	print(atCommandString)
