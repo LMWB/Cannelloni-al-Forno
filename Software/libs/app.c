@@ -9,13 +9,14 @@ void app_main(void) {
 
 	timerclock_set_number_of_active_timeslots(2);
 
+	/* RTC is in UTC, so right now in winter time (MEZ = mitteleuropaeische normalzeit) it is 1h behind */
 	/* from 5:00 until 7:30 */
-	timerclock_set_start(TIMER_SLOTS_1,	5*60);
-	timerclock_set_end( TIMER_SLOTS_1,	7*60+30);
+	timerclock_set_start(TIMER_SLOTS_1,	4*60);
+	timerclock_set_end( TIMER_SLOTS_1,	6*60+30);
 
-	/* from 16:00 until 21:00 */
-	timerclock_set_start(TIMER_SLOTS_2,	16*60);
-	timerclock_set_end( TIMER_SLOTS_2,	17*60+47);
+	/* from 16:00 until 22:00 */
+	timerclock_set_start(TIMER_SLOTS_2,	15*60);
+	timerclock_set_end( TIMER_SLOTS_2,	21*60);
 
 	myprintf("Starting timerclock and noRTOS Demo\n");
 
@@ -34,10 +35,8 @@ void app_main(void) {
 		uint32_t now = NORTOS_SCHEDULAR_GET_TICK();
 		printf("differnce from now to previous call is %ld ms\n", (now-time_stamp_last_call));
 		time_stamp_last_call = now;
-
 	}
 
-	// print time and epoch time to log on terminal
 	void print_time_now(void) {
 		struct tm *curren_Date_Time = get_gmtime_stm32();
 		uint32_t epochtime = (uint32_t) convert_tm_struct_to_epoch_time(curren_Date_Time);
@@ -64,7 +63,7 @@ void app_main(void) {
 		}
 	}
 
-	/* now I create some tasks and add them to the schedular */
+	/* now I create some tasks and add them to the scheduler */
 
 	// wenn reihenfolge nicht chronologisch,
 	// gehts auch aber es entstehen interesannte Zeiteffekte
@@ -81,7 +80,6 @@ void app_main(void) {
 
 	noRTOS_task_t test_task3 = { .delay = eDELAY_10s, .task_callback = timerclock_run };
 	noRTOS_add_task_to_scheduler(&test_task3);
-
 
 	/* this runs for ever */
 	noRTOS_run_schedular();
