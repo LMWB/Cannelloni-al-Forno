@@ -23,9 +23,7 @@ todo
 
 # todo
 - add some sort of remote access (wifi, can, RS485,..)
-- add shunt to track total energy consuption
+- add shunt to track total energy consumption
 - use TI DRV89xx instead of LD293D
-
-
-
-
+- update noRTOS to latest version
+- make timerclock multi instance to control different output channels

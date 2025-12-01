@@ -9,12 +9,13 @@ void app_main(void) {
 
 	timerclock_set_number_of_active_timeslots(2);
 
+	/* RTC is in UTC, so right now in winter time (MEZ = mitteleuropaeische normalzeit) it is 1h behind */
 	/* from 5:00 until 7:30 */
-	timerclock_set_start(TIMER_SLOTS_1,	5*60);
-	timerclock_set_end( TIMER_SLOTS_1,	7*60+30);
+	timerclock_set_start(TIMER_SLOTS_1,	4*60);
+	timerclock_set_end( TIMER_SLOTS_1,	6*60+30);
 
-	/* from 16:00 until 21:00 */
-	timerclock_set_start(TIMER_SLOTS_2,	16*60);
+	/* from 16:00 until 22:00 */
+	timerclock_set_start(TIMER_SLOTS_2,	15*60);
 	timerclock_set_end( TIMER_SLOTS_2,	21*60);
 
 	myprintf("Starting timerclock and noRTOS Demo\n");
@@ -29,39 +30,29 @@ void app_main(void) {
 	LD293D_ENABLE_OUT1_OUT2();
 	LD293D_ENABLE_OUT3_OUT4();
 
-	void heart_beat_blinky(void){
-		// toggle LED to indicate cpu is running, no stuck in polling
-		;
-	}
-
 	void print_tick_time_stamp_diff(void){
 		static uint32_t time_stamp_last_call = 0;
 		uint32_t now = NORTOS_SCHEDULAR_GET_TICK();
 		printf("differnce from now to previous call is %ld ms\n", (now-time_stamp_last_call));
 		time_stamp_last_call = now;
-
 	}
 
-	void test_callback(void) {
-		printf("Testing printf with _write() override\n\n");
+	void print_time_now(void) {
+		struct tm *curren_Date_Time = get_gmtime_stm32();
+		uint32_t epochtime = (uint32_t) convert_tm_struct_to_epoch_time(curren_Date_Time);
+
+		printf("current time (utc),%02d:%02d:%02d,", curren_Date_Time->tm_hour, curren_Date_Time->tm_min, curren_Date_Time->tm_sec);
+		printf("epochtime,%ld\n", epochtime);
 	}
 
-	void test_callback2(void) {
-		myprintf("\tHello World Task 2\n");
-	}
-
-	void test_callback3(void) {
-		timerclock_run();
-	}
-
-	void test_callback4(void) {
+	void uart_at_command_callback(void) {
 		if( noRTOS_is_UART2_read_line_complete() ) {
 			char* at_command = strstr( (char*)uart2_buffer, "AT+SETRTC=");
 			if( at_command ){
 				char asctime_string[26];
 				struct tm timedate = { 0 };
 				char *time = at_command+10;
-				char *date = at_command+18;
+				char *date = at_command+19;
 				convert_compiler_timestamp_to_asctime(time, date, asctime_string);
 				convert_asctime_to_tm_struct(asctime_string, &timedate);
 				(void) change_controller_time(&timedate);
@@ -72,21 +63,23 @@ void app_main(void) {
 		}
 	}
 
-	/* now I create some tasks and add them to the schedular */
-	noRTOS_task_t test_task = { .delay = eDELAY_1s, .task_callback = test_callback };
-	noRTOS_add_task_to_scheduler(&test_task);
+	/* now I create some tasks and add them to the scheduler */
 
-	noRTOS_task_t heartbeat = { .delay = eDELAY_1s, .task_callback = print_tick_time_stamp_diff };
-	noRTOS_add_task_to_scheduler(&heartbeat);
+	// wenn reihenfolge nicht chronologisch,
+	// gehts auch aber es entstehen interesannte Zeiteffekte
+	// dokumentieren!!
 
-	noRTOS_task_t test_task2 = { .delay = eDELAY_5s, .task_callback = test_callback2 };
-	noRTOS_add_task_to_scheduler(&test_task2);
+	noRTOS_task_t uart_t = { .delay = eDELAY_10milli, .task_callback = uart_at_command_callback };
+	noRTOS_add_task_to_scheduler(&uart_t);
 
-	noRTOS_task_t test_task3 = { .delay = eDELAY_10s, .task_callback = test_callback3 };
-	noRTOS_add_task_to_scheduler(&test_task3);
+	noRTOS_task_t print_time_now_t = { .delay = eDELAY_1s, .task_callback = print_time_now };
+	noRTOS_add_task_to_scheduler(&print_time_now_t);
 
-	noRTOS_task_t test_task4 = { .delay = eDELAY_10milli, .task_callback = test_callback4 };
+	noRTOS_task_t test_task4 = { .delay = eDELAY_1s, .task_callback = print_tick_time_stamp_diff };
 	noRTOS_add_task_to_scheduler(&test_task4);
+
+	noRTOS_task_t test_task3 = { .delay = eDELAY_10s, .task_callback = timerclock_run };
+	noRTOS_add_task_to_scheduler(&test_task3);
 
 	/* this runs for ever */
 	noRTOS_run_schedular();
@@ -105,5 +98,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if (huart->Instance == USART2){
 		noRTOS_UART2_receive_byte_callback();
 	}
+
+
+
+
 }
 

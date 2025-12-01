@@ -26,6 +26,11 @@ time_t get_epoch_time(void);
 /**
  *
  */
+time_t convert_tm_struct_to_epoch_time(struct tm* time);
+
+/**
+ *
+ */
 uint16_t convert_gmtime_to_minuts(struct tm* time);
 
 /**

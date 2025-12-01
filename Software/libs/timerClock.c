@@ -48,11 +48,12 @@ bool is_current_time_in_any_active_timeslots(uint16_t now_in_minutes){
 }
 
 void print_current_time(struct tm* time) {
-	myprintf("Current Time: %02d : %02d : %02d (UTC) = %d min \n",
+	myprintf("Current Time: %02d : %02d : %02d (UTC) = %d / %d min \n",
 			time->tm_hour,
 			time->tm_min,
 			time->tm_sec,
-			time->tm_hour*60 + time->tm_min);
+			time->tm_hour*60 + time->tm_min,
+			24*60);
 }
 
 void print_active_time_slots(void) {
@@ -85,25 +86,26 @@ void timerclock_set_end(uint8_t slot, uint16_t end_in_minutes){
 	}
 }
 
-void timerclock_run(){
+void timerclock_run() {
 	static timerClockStates_t state = UNDEFINED;
-	timerClockStates_t new_state 	= OFF;		/* initiates this variable to OFF ensures the output must be driven at first call of this function */
+	timerClockStates_t new_state = OFF; /* initiates this variable to OFF ensures the output must be driven at first call of this function */
 
-	struct tm *curren_Date_Time 		= get_gmtime_stm32();
-	uint16_t current_time_in_minuts 	= convert_gmtime_to_minuts(curren_Date_Time);
-	int8_t correction_day_light_saving 	= daylight_saving_time_minutes_offset;
-	uint16_t now 						= current_time_in_minuts + correction_day_light_saving;
+	struct tm *curren_Date_Time = get_gmtime_stm32();
+	uint16_t current_time_in_minuts = convert_gmtime_to_minuts(curren_Date_Time);
+	int8_t correction_day_light_saving = daylight_saving_time_minutes_offset;
+	uint16_t now = current_time_in_minuts + correction_day_light_saving;
 
+	myprintf("\n");
 	print_current_time(curren_Date_Time);
 	print_active_time_slots();
 	myprintf("\n");
 
-	if(is_current_time_in_any_active_timeslots(now)){
+	if (is_current_time_in_any_active_timeslots(now)) {
 		new_state = ON;
 	}
 
 	/* only write outputs once and once only on when they are off and off when the ar on */
-	if(new_state != state){
+	if (new_state != state) {
 		drive_outputs(new_state);
 		state = new_state;
 	}

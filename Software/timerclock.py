@@ -10,13 +10,16 @@ from terminal: 'python timerclock.py /dev/ttyACM0'
 def date_time_parser(args):
 	# generate time string in format like __TIME__(19:10:12) and __DATE__ (Oct 20 24) under C language
 	
-	#now = time.gmtime()
-	now = time.localtime()
+	# use this for UTC time
+	now = time.gmtime()
+
+	# use this for local time (summer / winter)
+	#now = time.localtime()
 	
 	atCommandString = "AT+SETRTC="
 	timeString = time.strftime("%H:%M:%S", now)
 	dateString = time.strftime("%b %d %Y", now)
-	atCommandString = atCommandString + timeString
+	atCommandString = atCommandString + timeString + ' '
 	atCommandString = atCommandString + dateString
 	atCommandString = atCommandString + '\r\n'
 	print(atCommandString)
