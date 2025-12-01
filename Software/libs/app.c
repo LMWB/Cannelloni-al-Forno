@@ -18,7 +18,7 @@ void app_main(void) {
 	timerclock_set_start(TIMER_SLOTS_2,	15*60);
 	timerclock_set_end( TIMER_SLOTS_2,	21*60);
 
-	myprintf("Starting timerclock and noRTOS Demo\n");
+	myprintf("Starting timerclock and noRTOS Demo RELEASE/v2.0 \n");
 
 	HAL_Delay(200);
 	struct tm *curren_Date_Time = get_gmtime_stm32();
