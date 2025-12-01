@@ -6,6 +6,15 @@
 #include "noRTOS.h"
 
 void app_main(void) {
+	/* create two, or more, instances of timerclock Class */
+	timer_clock_m_t timer_clock_Star = {0};
+	timer_clock_m_t timer_clock_Lamp = {0};
+
+	/* todo: rewrite the timer_clock code with
+	 * - function pointer to on()
+	 * - function pointer to off()
+	 * - timer slots memory
+	 * */
 
 	timerclock_set_number_of_active_timeslots(2);
 
