@@ -5,10 +5,27 @@
 #include "timerClock.h"
 #include "noRTOS.h"
 
+// simple wrapper to attache system specific on?off functions
+void star_on(void){
+	LD293D_TURN_ON_OUT1();
+}
+
+void star_off(void){
+	LD293D_TURN_OFF_OUT1();
+}
+
+void lamp_on(void){
+	LD293D_TURN_ON_OUT2();
+}
+
+void lamp_off(void){
+	LD293D_TURN_OFF_OUT2();
+}
+
 void app_main(void) {
 	/* create two, or more, instances of timerclock Class */
-	timer_clock_m_t timer_clock_Star = {0};
-	timer_clock_m_t timer_clock_Lamp = {0};
+	timer_clock_t timer_clock_Star = {0};
+	timer_clock_t timer_clock_Lamp = {0};
 
 	/* todo: rewrite the timer_clock code with
 	 * - function pointer to on()
@@ -16,16 +33,28 @@ void app_main(void) {
 	 * - timer slots memory
 	 * */
 
-	timerclock_set_number_of_active_timeslots(2);
+	/* map output driver functions to timer_clock instance */
+	timer_clock_Star.on = star_on;
+	timer_clock_Star.off = star_off;
+
+	timer_clock_Lamp.on = lamp_on;
+	timer_clock_Lamp.off = lamp_off;
+
+	/* set time slots for 1st instance */
+	timerclock_set_number_of_active_timeslots(&timer_clock_Star, 2);
+	timerclock_set_number_of_active_timeslots(&timer_clock_Lamp, 1);
 
 	/* RTC is in UTC, so right now in winter time (MEZ = mitteleuropaeische normalzeit) it is 1h behind */
 	/* from 5:00 until 7:30 */
-	timerclock_set_start(TIMER_SLOTS_1,	4*60);
-	timerclock_set_end( TIMER_SLOTS_1,	6*60+30);
+	timerclock_set_start(	&timer_clock_Star, TIMER_SLOTS_1, 4*60);
+	timerclock_set_end( 	&timer_clock_Star, TIMER_SLOTS_1, 6*60+30);
 
 	/* from 16:00 until 22:00 */
-	timerclock_set_start(TIMER_SLOTS_2,	15*60);
-	timerclock_set_end( TIMER_SLOTS_2,	21*60);
+	timerclock_set_start(	&timer_clock_Star, TIMER_SLOTS_2, 15*60);
+	timerclock_set_end(		&timer_clock_Star, TIMER_SLOTS_2, 21*60);
+
+	timerclock_set_start(	&timer_clock_Lamp, TIMER_SLOTS_1, 18*60);
+	timerclock_set_end(		&timer_clock_Lamp, TIMER_SLOTS_1, 23*60);
 
 	myprintf("Starting timerclock and noRTOS Demo\n");
 
@@ -72,6 +101,14 @@ void app_main(void) {
 		}
 	}
 
+	void run1(void){
+		timerclock_run( &timer_clock_Star );
+	}
+
+	void run2(void){
+		timerclock_run( &timer_clock_Lamp );
+	}
+
 	/* now I create some tasks and add them to the scheduler */
 
 	// wenn reihenfolge nicht chronologisch,
@@ -84,11 +121,16 @@ void app_main(void) {
 	noRTOS_task_t print_time_now_t = { .delay = eDELAY_1s, .task_callback = print_time_now };
 	noRTOS_add_task_to_scheduler(&print_time_now_t);
 
-	noRTOS_task_t test_task4 = { .delay = eDELAY_1s, .task_callback = print_tick_time_stamp_diff };
-	noRTOS_add_task_to_scheduler(&test_task4);
+	noRTOS_task_t exe_time = { .delay = eDELAY_1s, .task_callback = print_tick_time_stamp_diff };
+	noRTOS_add_task_to_scheduler(&exe_time);
 
-	noRTOS_task_t test_task3 = { .delay = eDELAY_10s, .task_callback = timerclock_run };
-	noRTOS_add_task_to_scheduler(&test_task3);
+	/* in case the function that needs to be run is not of type void foo(void)
+	 * just create a simple wrapper that manages parameter handling */
+	noRTOS_task_t timerClock1 = { .delay = eDELAY_10s, .task_callback = run1 };
+	noRTOS_add_task_to_scheduler(&timerClock1);
+
+	noRTOS_task_t timerClock2 = { .delay = eDELAY_10s, .task_callback = run2 };
+	noRTOS_add_task_to_scheduler(&timerClock2);
 
 	/* this runs for ever */
 	noRTOS_run_schedular();
@@ -107,9 +149,5 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if (huart->Instance == USART2){
 		noRTOS_UART2_receive_byte_callback();
 	}
-
-
-
-
 }
 

@@ -12,25 +12,31 @@
 #define TIMER_SLOTS_4 		3
 #define TIMER_SLOTS_5 		4
 
-typedef struct _timer_clock{
+typedef enum{eOFF, eON, eUNDEFINED} timerClockStates_t;
+
+/* basic function pointer prototype with void return and void arguments */
+typedef void (*timerClockFP_t)(void);
+
+typedef struct _timer_slot{
 	uint16_t 	start_in_minutes;
 	uint16_t 	end_in_minutes;
+} timerClockSlot_t;
+
+typedef struct _timer_clock{
+	uint8_t 			number_of_active_timeslots;
+	timerClockSlot_t 	slot_set_points[MAX_TIMER_SLOTS];
+	timerClockStates_t 	state;
+	timerClockFP_t 		on;
+	timerClockFP_t 		off;
 } timer_clock_t;
 
-typedef struct _recirculation_timer_clock{
-	uint8_t 		number_of_active_timeslots;
-	timer_clock_t 	slot_set_points[MAX_TIMER_SLOTS];
-} timer_clock_m_t;
+/* timer clock API */
+void timerclock_print_active_time_slots(		timer_clock_t* TC);
+void timerclock_set_number_of_active_timeslots(	timer_clock_t* TC, uint8_t number_of_slot_active);
+void timerclock_set_start(						timer_clock_t* TC, uint8_t slot, uint16_t start_in_minutes);
+void timerclock_set_end(						timer_clock_t* TC, uint8_t slot, uint16_t start_in_minutes);
+void timerclock_run(							timer_clock_t* TC);
 
-/* later after proper testing this does not need to be global */
-extern timer_clock_m_t recirculation_timer_clock;
-
-void timerclock_set_number_of_active_timeslots(uint8_t number_of_slot_active);
-void timerclock_set_start(uint8_t slot, uint16_t start_in_minutes);
-void timerclock_set_end(uint8_t slot, uint16_t start_in_minutes);
-void timerclock_run();
-
+/* utils */
 void print_current_time(struct tm* time);
-void print_active_time_slots(void);
-
 #endif

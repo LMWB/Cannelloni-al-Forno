@@ -2,7 +2,7 @@
 #include "hardwareGlobal.h"
 #include <string.h>
 /**
- * *************** Task Schedular ***************
+ * *************** Task Scheduler ***************
  */
 
 noRTOS_task_t *global_list_of_tasks[NORTOS_NO_OF_MAX_TASK];
