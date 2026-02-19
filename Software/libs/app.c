@@ -31,6 +31,9 @@ void app_main(void) {
 	 * - function pointer to on()
 	 * - function pointer to off()
 	 * - timer slots memory
+	 * - remove myprintf()
+	 * - refactor timer_clock_lip to not have printf()
+	 * - timer slots profile (for summer vs. winter)
 	 * */
 
 	/* map output driver functions to timer_clock instance */
@@ -53,6 +56,7 @@ void app_main(void) {
 	timerclock_set_start(	&timer_clock_Star, TIMER_SLOTS_2, 15*60);
 	timerclock_set_end(		&timer_clock_Star, TIMER_SLOTS_2, 21*60);
 
+	/* from 17:00 until 24:00 */
 	timerclock_set_start(	&timer_clock_Lamp, TIMER_SLOTS_1, 18*60);
 	timerclock_set_end(		&timer_clock_Lamp, TIMER_SLOTS_1, 23*60);
 
