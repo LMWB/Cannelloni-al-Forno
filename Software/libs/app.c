@@ -28,12 +28,13 @@ void app_main(void) {
 	timer_clock_t timer_clock_Lamp = {0};
 
 	/* todo: rewrite the timer_clock code with
-	 * - function pointer to on()
-	 * - function pointer to off()
-	 * - timer slots memory
-	 * - remove myprintf()
+	 * - function pointer to on() - done
+	 * - function pointer to off() - done
+	 * - timer slots memory - ????
+	 * - timer slots profile (for summer vs. winter) - done
+	 * - remove myprintf() -
 	 * - refactor timer_clock_lip to not have printf()
-	 * - timer slots profile (for summer vs. winter)
+	 *
 	 * */
 
 	/* map output driver functions to timer_clock instance */
@@ -47,14 +48,32 @@ void app_main(void) {
 	timerclock_set_number_of_active_timeslots(&timer_clock_Star, 2);
 	timerclock_set_number_of_active_timeslots(&timer_clock_Lamp, 1);
 
-	/* RTC is in UTC, so right now in winter time (MEZ = mitteleuropaeische normalzeit) it is 1h behind */
-	/* from 5:00 until 7:30 */
-	timerclock_set_start(	&timer_clock_Star, TIMER_SLOTS_1, 4*60);
-	timerclock_set_end( 	&timer_clock_Star, TIMER_SLOTS_1, 6*60+30);
 
-	/* from 16:00 until 22:00 */
-	timerclock_set_start(	&timer_clock_Star, TIMER_SLOTS_2, 15*60);
-	timerclock_set_end(		&timer_clock_Star, TIMER_SLOTS_2, 21*60);
+	/* this pin has internal pull up, to switch it, draw it to GND e.g. with jumper wire
+	 * so default (without jumper wire) is high hans winter-time-mode */
+	bool is_winter_time = READ_PIN(Winter_Summer_GPIO_Port, Winter_Summer_Pin);
+	/* profile for winter time, short daylight, long night time */
+	if (is_winter_time) {
+		/* RTC is in UTC, so right now in winter time (MEZ = mitteleuropaeische normalzeit) it is 1h behind */
+		/* from 5:00 until 7:30 */
+		timerclock_set_start(&timer_clock_Star, TIMER_SLOTS_1, 4 * 60);
+		timerclock_set_end(&timer_clock_Star, TIMER_SLOTS_1, 6 * 60 + 30);
+
+		/* from 16:00 until 22:00 */
+		timerclock_set_start(&timer_clock_Star, TIMER_SLOTS_2, 15 * 60);
+		timerclock_set_end(&timer_clock_Star, TIMER_SLOTS_2, 21 * 60);
+	}
+	/* profile for summer time, short night time, long daylight */
+	else {
+		/* from 4:30 until 6:00 */
+		timerclock_set_start(&timer_clock_Star, TIMER_SLOTS_1, 3 * 60 + 30);
+		timerclock_set_end(&timer_clock_Star, TIMER_SLOTS_1, 5 * 60);
+
+		/* from 19:00 until 23:00 */
+		timerclock_set_start(&timer_clock_Star, TIMER_SLOTS_2, 18 * 60);
+		timerclock_set_end(&timer_clock_Star, TIMER_SLOTS_2, 22 * 60);
+	}
+
 
 	/* from 17:00 until 24:00 */
 	timerclock_set_start(	&timer_clock_Lamp, TIMER_SLOTS_1, 18*60);

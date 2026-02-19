@@ -72,6 +72,8 @@ void Error_Handler(void);
 #define Out1_GPIO_Port GPIOA
 #define Out2_Pin GPIO_PIN_7
 #define Out2_GPIO_Port GPIOC
+#define Winter_Summer_Pin GPIO_PIN_8
+#define Winter_Summer_GPIO_Port GPIOC
 #define EN3_4_Pin GPIO_PIN_9
 #define EN3_4_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13

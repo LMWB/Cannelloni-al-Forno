@@ -48,6 +48,10 @@
 #define LD293D_TOGGLE_OUT3() 	HAL_GPIO_TogglePin(Out3_GPIO_Port, Out3_Pin)
 #define LD293D_TOGGLE_OUT4() 	HAL_GPIO_TogglePin(Out4_GPIO_Port, Out4_Pin)
 
+#define TOGGLE_PIN(PORT, PIN)		HAL_GPIO_TogglePin(PORT, PIN)			/* void HAL_GPIO_TogglePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin) */
+#define WRITE_PIN(PORT, PIN, STATE)	HAL_GPIO_WritePin(PORT, PIN, STATE); 	/* void HAL_GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState) */
+#define READ_PIN(PORT, PIN)			HAL_GPIO_ReadPin(PORT, PIN)
+
 /* *** UART ***************************************************************** */
 #define UART_TERMINAL_HANDLER 	            huart2
 #define UART_TERMINAL_INSTANCE 	            USART2
