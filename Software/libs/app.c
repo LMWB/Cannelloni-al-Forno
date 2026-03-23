@@ -44,38 +44,33 @@ void app_main(void) {
 	timer_clock_Lamp.on = lamp_on;
 	timer_clock_Lamp.off = lamp_off;
 
-	/* set time slots for 1st instance */
-	timerclock_set_number_of_active_timeslots(&timer_clock_Star, 2);
-	timerclock_set_number_of_active_timeslots(&timer_clock_Lamp, 1);
-
 
 	/* this pin has internal pull up, to switch it, draw it to GND e.g. with jumper wire
 	 * so default (without jumper wire) is high hans winter-time-mode */
 	bool is_winter_time = READ_PIN(Winter_Summer_GPIO_Port, Winter_Summer_Pin);
 	/* profile for winter time, short daylight, long night time */
 	if (is_winter_time) {
+		timerclock_set_number_of_active_timeslots(&timer_clock_Star, 2);
 		/* RTC is in UTC, so right now in winter time (MEZ = mitteleuropaeische normalzeit) it is 1h behind */
 		/* from 5:00 until 7:30 */
-		timerclock_set_start(&timer_clock_Star, TIMER_SLOTS_1, 4 * 60);
-		timerclock_set_end(&timer_clock_Star, TIMER_SLOTS_1, 6 * 60 + 30);
+		timerclock_set_start(	&timer_clock_Star, TIMER_SLOTS_1, 4 * 60);
+		timerclock_set_end(		&timer_clock_Star, TIMER_SLOTS_1, 6 * 60 + 30);
 
 		/* from 16:00 until 22:00 */
-		timerclock_set_start(&timer_clock_Star, TIMER_SLOTS_2, 15 * 60);
-		timerclock_set_end(&timer_clock_Star, TIMER_SLOTS_2, 21 * 60);
+		timerclock_set_start(	&timer_clock_Star, TIMER_SLOTS_2, 15 * 60);
+		timerclock_set_end(		&timer_clock_Star, TIMER_SLOTS_2, 21 * 60);
 	}
 	/* profile for summer time, short night time, long daylight */
 	else {
-		/* from 4:30 until 6:00 */
-		timerclock_set_start(&timer_clock_Star, TIMER_SLOTS_1, 3 * 60 + 30);
-		timerclock_set_end(&timer_clock_Star, TIMER_SLOTS_1, 5 * 60);
-
+		timerclock_set_number_of_active_timeslots(&timer_clock_Star, 1);
 		/* from 19:00 until 23:00 */
-		timerclock_set_start(&timer_clock_Star, TIMER_SLOTS_2, 18 * 60);
-		timerclock_set_end(&timer_clock_Star, TIMER_SLOTS_2, 22 * 60);
+		timerclock_set_start(	&timer_clock_Star, TIMER_SLOTS_1, 18 * 60);
+		timerclock_set_end(		&timer_clock_Star, TIMER_SLOTS_1, 22 * 60);
 	}
 
-
+	/* just to have a 2nd light source to have the app multi instance */
 	/* from 17:00 until 24:00 */
+	timerclock_set_number_of_active_timeslots(&timer_clock_Lamp, 1);
 	timerclock_set_start(	&timer_clock_Lamp, TIMER_SLOTS_1, 18*60);
 	timerclock_set_end(		&timer_clock_Lamp, TIMER_SLOTS_1, 23*60);
 
