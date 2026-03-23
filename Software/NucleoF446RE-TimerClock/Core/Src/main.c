@@ -49,12 +49,12 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "rtc.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "rtc.h"
 #include "app.h"
 /* USER CODE END Includes */
 
@@ -127,8 +127,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  MX_RTC_Init();
   /* USER CODE BEGIN 2 */
+
+  USER_RTC_Init();
 
   app_main();
 
